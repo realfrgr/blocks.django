@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}More{% endblock %}
+{% block content %}
+<div class="container">
+<h3> Подробнее </h3>
+<p>{{post.author}} </p>
+<p>{{post.created_at}} </p>
+<p>{{post.title}} </p>
+<p>{{post.content}} </p>
+
+<div class="back_to">
+<a href="/posts"> Go back to your posts </a>
+</div>
+
+
+
+
+</div>
+<style>
+.back_to {
+    background-color: lightgray;
+    width: 200px;
+    height: 30px;
+    border-radius: 20px;
+    text-align: center;
+    border: solid black;
+}
+</style>
+{% endblock %}
+

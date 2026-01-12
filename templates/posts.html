@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}
+  your posts
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <h1>posts:</h1>
+    <h2>there arent any posts right now. Go back to <a href="/main">main</a>?</h2>
+
+    <select class="form-select" id="sort-select" name="sort" aria-label="Default select example">
+      <option selected disabled>Open this select menu</option>
+      <option value="newest">newest</option>
+      <option value="oldest">oldest</option>
+      <option value="title">title</option>
+    </select>
+
+    <div id="post-container">
+      {% for post in posts %}
+      <div class="card my-2" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.title }}</h5>
+          <p class="card-subtitle mb-2 text-body-secondary">{{ post.content }}</p>
+          <p>{{ post.author }}</p>
+          <p>{{ post.created_at }}</p>
+          <a href="/post/{{ post.id }}" class="card-link">More</a>
+          <a href="/post/edit/{{ post.pk }}" class="card-link">Edit</a>
+          <a href="/post/{{ post.id }}/delete" class="card-link">Delete</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <a href="/post/create">Create a post</a>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded",function(){
+
+      const form=document.getElementById("sort-form")
+      const select=document.getElementById("sort-select")
+      const container=document.getElementById("post-container")
+      select.addEventListener("change",function(){
+          const sortBy = select.value
+           if ( !sortBy) return ;
+           fetch(`/sort-posts/?sort=${sortBy}`).then(response=>response.json()).then(data=>{
+              container.innerHTML="";
+              console.log(data)
+              data.posts.forEach(post => {
+                  const postElement = ` <div class="card my-2" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title"> ${post.title} </h5>
+              <h6 class="card-subtitle mb-2 text-body-secondary">${ post.content }</h6>
+              <p>${ post.author }</p>
+              <p>${ post.created_at }</p>
+              <a href="/post/${ post.id }" class="card-link">More</a>
+              <a href="/post/edit/${ post.pk }" class="card-link">Edit</a>
+              <a href="/post/${ post.id }/delete" class="card-link">Delete</a>
+            </div>
+          </div>`;
+          container.innerHTML+=postElement;
+  
+              });
+  
+           }).catch(error=>console.error("Error",error));
+           
+  
+  
+      });
+  });
+  </script>
+{% endblock %}

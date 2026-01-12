@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Main page{% endblock %}
+{% block content %} 
+<div class="container">
+    <form method="post"> 
+        {% csrf_token %}
+{{form}}
+<button type="submit" >Create an account</button>
+</div>
+{% endblock %}

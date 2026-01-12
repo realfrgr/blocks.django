@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Sign up{% endblock %}
+{% block content %} 
+<div class="container">
+<h1> Create an account</h1>
+
+<div class="input-group mb-3">
+    <span class="input-group-text">@</span>
+    <div class="form-floating">
+      <input type="text" class="form-control" id="floatingInputGroup1" placeholder="Username">
+      <label for="floatingInputGroup1">Username</label>
+    </div>
+  </div>
+
+  <div class="form-floating">
+    <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+    <label for="floatingPassword">Password</label>
+  </div>
+  <form class="form-floating">
+    <input type="email" class="form-control" id="floatingInputValue" placeholder="name@example.com" value="test@example.com">
+    <label for="floatingInputValue">Email</label>
+  </form>
+  <div class="d-grid gap-2">
+    <button class="btn btn-primary" type="button">Sign up
+    </button>
+    </div>
+{% endblock %}
