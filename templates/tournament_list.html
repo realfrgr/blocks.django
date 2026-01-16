@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h1>Tournaments</h1>
+    {% if user.is_staff %}
+        <a href="{% url 'tournament_create' %}" class="btn btn-primary">+ Create Tournament</a>
+    {% endif %}
+</div>
+
+{% if tournaments %}
+    {% for t in tournaments %}
+    <div class="tournament-card">
+        <div>
+            <h3>{{ t.name }}</h3>
+            <p>
+                Participants: {{ t.participants.count }} / {{ t.max_participants }}
+                <br>
+                <small>Created: {{ t.created_at|date:"M d, Y" }}</small>
+            </p>
+        </div>
+        
+        <div style="text-align:right;">
+            {% if t.is_finished %}
+                <span class="status-badge status-finished">Finished</span>
+                <br><br>
+                Winner: <strong>{{ t.winner.username }}</strong>
+            {% elif t.is_active %}
+                <span class="status-badge status-active">In Progress</span>
+            {% else %}
+                <span class="status-badge status-open">Open for Registration</span>
+            {% endif %}
+
+            <div style="margin-top:10px;">
+                <a href="{% url 'tournament_detail' t.id %}" class="btn btn-primary">View Bracket</a>
+                
+                {% if not t.is_active and not t.is_finished %}
+                    {% if user in t.participants.all %}
+                        <button class="btn btn-success" disabled>Joined</button>
+                    {% else %}
+                        <a href="{% url 'tournament_join' t.id %}" class="btn btn-success">Join Now</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No tournaments available currently.</p>
+{% endif %}
+{% endblock %}

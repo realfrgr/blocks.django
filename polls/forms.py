@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post , Tournament
 from django.contrib.auth.models import User
 
 
@@ -17,3 +17,10 @@ class RegistrationForm(forms.ModelForm):
         fields=["username","email","password"]
 
 
+class TournamentForm(forms.ModelForm):
+    class Meta:
+        model = Tournament
+        fields = ["name", "max_participants"]
+        widgets = {
+            'max_participants': forms.NumberInput(attrs={'min': 2, 'step': 2}),
+        }

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Create Tournament</h1>
+<p>Set up a new bracket. The tournament will start automatically once the max participants is reached.</p>
+
+<form method="post" style="max-width: 500px;">
+    {% csrf_token %}
+    
+    <div style="margin-bottom: 15px;">
+        <label for="id_name">Tournament Name:</label>
+        {{ form.name }}
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="id_max_participants">Max Participants (e.g., 4, 8, 16):</label>
+        {{ form.max_participants }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Tournament</button>
+    <a href="{% url 'tournament_list' %}" class="btn btn-danger">Cancel</a>
+</form>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'tournament_list' %}">&larr; Back to List</a>
+</div>
+
+<h1>{{ tournament.name }}</h1>
+
+{% if tournament.is_finished %}
+    <div class="winner-banner">
+        🏆 Champion: {{ tournament.winner.username }} 🏆
+    </div>
+{% elif not tournament.is_active %}
+    <div style="background: #e9ecef; padding: 15px; border-radius: 5px;">
+        <p><strong>Waiting for players...</strong></p>
+        <p>Slots filled: {{ tournament.participants.count }} / {{ tournament.max_participants }}</p>
+        {% if user not in tournament.participants.all %}
+            <a href="{% url 'tournament_join' tournament.id %}" class="btn btn-success">Join Tournament</a>
+        {% else %}
+            <p>You are registered! Bracket generates when full.</p>
+        {% endif %}
+    </div>
+{% endif %}
+
+<!-- The Bracket Visualization -->
+{% if tournament.is_active or tournament.is_finished %}
+<div class="bracket-container">
+    {% for round_num, matches in rounds.items %}
+    <div class="round-column">
+        <div class="round-title">Round {{ round_num }}</div>
+        
+        {% for match in matches %}
+        <div class="match-card {% if match.winner %}finished{% else %}pending{% endif %}">
+            
+            <!-- Player 1 -->
+            <div class="player-row {% if match.winner == match.player1 %}winner-highlight{% endif %}">
+                <span>
+                    {% if match.player1 %}
+                        {{ match.player1.username }}
+                    {% else %}
+                        <span style="color:#999; font-style:italic;">Waiting...</span>
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="vs-separator">vs</div>
+
+            <!-- Player 2 -->
+            <div class="player-row {% if match.winner == match.player2 %}winner-highlight{% endif %}">
+                <span>
+                    {% if match.player2 %}
+                        {{ match.player2.username }}
+                    {% else %}
+                        <span style="color:#999; font-style:italic;">Waiting...</span>
+                    {% endif %}
+                </span>
+            </div>
+
+            <!-- Admin Controls (Set Winner) -->
+            {% if user.is_staff and not match.winner and match.player1 and match.player2 %}
+            <div class="admin-controls">
+                <span>Admin: Who won?</span>
+                <form method="post" action="{% url 'set_match_winner' match.id %}" style="display:flex; gap:5px; justify-content:center; margin-top:5px;">
+                    {% csrf_token %}
+                    <button type="submit" name="winner_id" value="{{ match.player1.id }}" class="btn btn-primary" style="font-size:0.7rem; padding:2px 5px;">
+                        {{ match.player1.username }}
+                    </button>
+                    <button type="submit" name="winner_id" value="{{ match.player2.id }}" class="btn btn-primary" style="font-size:0.7rem; padding:2px 5px;">
+                        {{ match.player2.username }}
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+            
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}
